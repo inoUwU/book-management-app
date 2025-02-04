@@ -27,10 +27,6 @@ const books: BookManager[] = [
   }
 ]
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
-
 app.get("/books", (c) => {
 
   const query = c.req.query();
@@ -39,6 +35,20 @@ app.get("/books", (c) => {
     return c.json(books.filter(book => book.name.includes(keyword)));
   }
   return c.json(books);
+})
+
+app.post("/books", async (c) => {
+  const body = await c.req.json();
+  const name = body.name;
+
+  const newBook = {
+    id: books.length + 1,
+    name,
+    status: "Available"
+  }
+  books.push(newBook);
+
+  return c.json(newBook);
 })
 
 const port = 8000
