@@ -27,8 +27,10 @@ const books: BookManager[] = [
   }
 ]
 
+/**
+ * 書籍の一覧を取得する
+ */
 app.get("/books", (c) => {
-
   const query = c.req.query();
   const keyword = query.keyword;
   if (keyword) {
@@ -37,18 +39,24 @@ app.get("/books", (c) => {
   return c.json(books);
 })
 
-app.post("/books", async (c) => {
+/**
+ * 書籍の状態を更新する
+ */
+app.put("/books/:id", async(c) => {
+  const id = c.req.param("id");
   const body = await c.req.json();
-  const name = body.name;
+  const status = body.status;
 
-  const newBook = {
-    id: books.length + 1,
-    name,
-    status: "Available"
+  const book = books.find(book => book.id.toString() === id);
+ 
+  if(!book) {
+    c.status(404);
+    return c.json({error: "Book not found"});
   }
-  books.push(newBook);
 
-  return c.json(newBook);
+book.status = status;
+
+return c.json(book);
 })
 
 const port = 8000
