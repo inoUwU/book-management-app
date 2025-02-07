@@ -1,7 +1,7 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 
-const app = new Hono()
 
 type BookManager = {
   id: number,
@@ -27,6 +27,18 @@ const books: BookManager[] = [
   }
 ]
 
+const app = new Hono()
+
+// setting cors
+app.use("/*", cors({
+  origin: ["http://localhost:5173"],
+  allowMethods: ["GET", "POST", "PUT", "DELETE"],
+  allowHeaders: ["Content-Type", "Authorization"],
+  exposeHeaders: ["Content-Type"],
+  maxAge: 3600,
+  credentials: true
+}))
+
 /**
  * 書籍の一覧を取得する
  */
@@ -42,21 +54,21 @@ app.get("/books", (c) => {
 /**
  * 書籍の状態を更新する
  */
-app.put("/books/:id", async(c) => {
+app.put("/books/:id", async (c) => {
   const id = c.req.param("id");
   const body = await c.req.json();
   const status = body.status;
 
   const book = books.find(book => book.id.toString() === id);
- 
-  if(!book) {
+
+  if (!book) {
     c.status(404);
-    return c.json({error: "Book not found"});
+    return c.json({ error: "Book not found" });
   }
 
-book.status = status;
+  book.status = status;
 
-return c.json(book);
+  return c.json(book);
 })
 
 const port = 8000
