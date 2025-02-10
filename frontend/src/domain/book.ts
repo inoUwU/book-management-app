@@ -12,3 +12,7 @@ export class BookManage {
         public status: string,
     ) { }
 }
+
+export type BookState = {
+    allBooks: BookManage[];
+}
