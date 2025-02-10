@@ -2,7 +2,6 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
-
 type BookManager = {
   id: number,
   name: string,
@@ -49,6 +48,24 @@ app.get("/books", (c) => {
     return c.json(books.filter(book => book.name.includes(keyword)));
   }
   return c.json(books);
+})
+
+/**
+ * 書籍を追加する
+ */
+app.post("/books", async (c) => {
+  const body = await c.req.json();
+  const name = body.name;
+
+  const id = books.length + 1;
+  const book = {
+    id,
+    name,
+    status: "Available"
+  }
+  books.push(book);
+
+  return c.json(book);
 })
 
 /**
