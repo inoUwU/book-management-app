@@ -15,4 +15,6 @@ export class BookManage {
 
 export type BookState = {
     allBooks: BookManage[];
+    filteredBooks: BookManage[] | null;
+    keyword: string;
 }
